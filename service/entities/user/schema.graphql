@@ -1,0 +1,17 @@
+enum UserRole {
+  ADMIN
+  USER
+}
+
+# This model is used to store user's data.
+type User {
+  _id: ID
+  # The User's full name.
+  name: String
+  # The User's email address.
+  email: String
+  # The User's organization name.
+  organization: String
+  # The USer's role.
+  role: UserRole
+}

@@ -1,0 +1,193 @@
+Description: ${self:custom.package.title} Authentication Stack [${opt:stage}]
+Resources:
+  CognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: ${self:service}-${opt:stage}-user-pool
+      UsernameAttributes:
+        - email
+      AutoVerifiedAttributes:
+        - email
+      UsernameConfiguration:
+        CaseSensitive: false
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 12 # password length is more important than entropy
+          RequireLowercase: false
+          RequireUppercase: false
+          RequireNumbers: false
+          RequireSymbols: false
+      Schema:
+        - AttributeDataType: String
+          Name: email
+          Required: true
+        - AttributeDataType: String
+          Mutable: true
+          Name: name
+          Required: true
+
+  CognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    DependsOn: CognitoUserPool
+    Properties:
+      ClientName: ${self:service}-${opt:stage}-app-client
+      GenerateSecret: false
+      UserPoolId:
+        Ref: CognitoUserPool
+
+  CognitoIdentityPool:
+    Type: AWS::Cognito::IdentityPool
+    DependsOn:
+      - CognitoUserPool
+      - CognitoUserPoolClient
+    Properties:
+      AllowUnauthenticatedIdentities: false
+      IdentityPoolName: ${self:service} ${opt:stage}
+      CognitoIdentityProviders:
+        - ProviderName:
+            Fn::Join:
+              - ""
+              - - cognito-idp.
+                - Ref: AWS::Region
+                - .amazonaws.com/
+                - Ref: CognitoUserPool
+          ClientId:
+            Ref: CognitoUserPoolClient
+
+  CognitoIdentityPoolUnauthRole:
+    Type: AWS::IAM::Role
+    DependsOn: CognitoIdentityPool
+    Properties:
+      RoleName: cognito-${self:service}-${opt:stage}-unauth-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Action: sts:AssumeRoleWithWebIdentity
+            Effect: Allow
+            Principal:
+              Federated: cognito-identity.amazonaws.com
+            Condition:
+              ForAnyValue:StringLike:
+                cognito-identity.amazonaws.com:amr: unauthenticated
+              StringEquals:
+                cognito-identity.amazonaws.com:aud:
+                  Ref: CognitoIdentityPool
+      Policies:
+        - PolicyName: cognito-${self:service}-${opt:stage}-unauth-default-role-policy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - mobileanalytics:PutEvents
+                  - cognito-sync:*
+                  - cognito-identity:*
+                Resource: "*"
+
+  CognitoIdentityPoolAuthRole:
+    Type: AWS::IAM::Role
+    DependsOn: CognitoIdentityPool
+    Properties:
+      RoleName: cognito-${self:service}-${opt:stage}-auth-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Action: sts:AssumeRoleWithWebIdentity
+            Effect: Allow
+            Principal:
+              Federated: cognito-identity.amazonaws.com
+            Condition:
+              ForAnyValue:StringLike:
+                cognito-identity.amazonaws.com:amr: authenticated
+              StringEquals:
+                cognito-identity.amazonaws.com:aud:
+                  Ref: CognitoIdentityPool
+      Policies:
+        - PolicyName: cognito-${self:service}-${opt:stage}-auth-default-role-policy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - mobileanalytics:PutEvents
+                  - cognito-sync:*
+                  - cognito-identity:*
+                Resource: "*"
+        - PolicyName: cognito-${self:service}-${opt:stage}-auth-storage-role-policy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:putObjectAcl
+                  - s3:putObject
+                  - s3:getObjectAcl
+                  - s3:getObject
+                Resource:
+                  - Fn::ImportValue: ${self:service}-${opt:stage}-storage-UserStorageS3BucketArn
+
+  CognitoIdentityPoolRolesAttachment:
+    Type: AWS::Cognito::IdentityPoolRoleAttachment
+    DependsOn:
+      - CognitoIdentityPool
+      - CognitoIdentityPoolUnauthRole
+      - CognitoIdentityPoolAuthRole
+    Properties:
+      IdentityPoolId:
+        Ref: CognitoIdentityPool
+      Roles:
+        unauthenticated:
+          Fn::GetAtt:
+            - CognitoIdentityPoolUnauthRole
+            - Arn
+        authenticated:
+          Fn::GetAtt:
+            - CognitoIdentityPoolAuthRole
+            - Arn
+
+Outputs:
+  CognitoUserPoolArn:
+    Description: The Cognito User Pool Arn
+    Value:
+      Fn::GetAtt:
+        - CognitoUserPool
+        - Arn
+    Export:
+      Name:
+        Fn::Join:
+          - "-"
+          - - Ref: AWS::StackName
+            - CognitoUserPoolArn
+
+  CognitoUserPoolId:
+    Description: The Cognito User Pool ID
+    Value:
+      Ref: CognitoUserPool
+    Export:
+      Name:
+        Fn::Join:
+          - "-"
+          - - Ref: AWS::StackName
+            - CognitoUserPoolId
+
+  CognitoIdentityPoolId:
+    Description: The Cognito Identity Pool ID
+    Value:
+      Ref: CognitoIdentityPool
+    Export:
+      Name:
+        Fn::Join:
+          - "-"
+          - - Ref: AWS::StackName
+            - CognitoIdentityPoolId
+
+  CognitoUserPoolClientId:
+    Description: The Cognito User Pool Client ID
+    Value:
+      Ref: CognitoUserPoolClient
+    Export:
+      Name:
+        Fn::Join:
+          - "-"
+          - - Ref: AWS::StackName
+            - CognitoUserPoolClientId

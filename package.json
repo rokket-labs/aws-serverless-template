@@ -1,0 +1,59 @@
+{
+  "name": "aws-serverless-template",
+  "title": "AWS Serverless Template",
+  "version": "0.0.0",
+  "description": "AWS Serverless Template",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "deploy:development": "sls deploy --stage development",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --exec sls offline start --stage local",
+    "lint": "eslint 'service/**/*.ts'"
+  },
+  "author": "Rokket Labs <info@rokketlabs.com> (https://rokketlabs.com)",
+  "contributors": [
+    "Santiago G. Marín <santiago.marin@rokketlabs.com> (https://github.com/stgogm)",
+    "Cristóbal Piña <cristobal@rokketlabs.com> (https://github.com/cristobalpina)"
+  ],
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@fiquu/database-manager-mongoose": "^1.0.6",
+    "@fiquu/is": "^1.4.0",
+    "@fiquu/logger": "^1.0.5",
+    "@fiquu/schema-loader-mongoose": "^1.0.5",
+    "@graphql-tools/load-files": "^6.2.5",
+    "@graphql-tools/merge": "^6.2.7",
+    "apollo-server-lambda": "^2.19.2",
+    "graphql": "^15.5.0",
+    "mongoose": "^5.11.14"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-typescript": "^7.12.7",
+    "@types/aws-lambda": "^8.10.71",
+    "@types/jest": "^26.0.20",
+    "@types/node": "^14.14.22",
+    "@typescript-eslint/eslint-plugin": "^4.14.2",
+    "@typescript-eslint/parser": "^4.14.2",
+    "ajv": "^7.0.4",
+    "aws-sdk-mock": "^5.1.0",
+    "babel-jest": "^26.6.3",
+    "eslint": "^7.19.0",
+    "eslint-config-rokket-labs": "^0.2.1",
+    "faker": "^5.3.1",
+    "jest": "^26.6.2",
+    "mongodb-memory-server-core": "^6.9.3",
+    "nodemon": "^2.0.6",
+    "serverless": "^2.22.0",
+    "serverless-jest-plugin": "^0.3.0",
+    "serverless-offline": "^6.8.0",
+    "serverless-plugin-additional-stacks": "^1.5.0",
+    "serverless-plugin-typescript": "^1.1.9",
+    "serverless-prune-plugin": "^1.4.3",
+    "ts-jest": "^26.5.0",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.1.3"
+  }
+}

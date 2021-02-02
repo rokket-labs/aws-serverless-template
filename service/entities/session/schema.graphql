@@ -1,0 +1,4 @@
+# Custom auth directive
+directive @auth(
+  requires: [UserRole],
+) on OBJECT | FIELD_DEFINITION

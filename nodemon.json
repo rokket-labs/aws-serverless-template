@@ -1,0 +1,4 @@
+{
+  "ext": "*.ts,*.js,*.graphql",
+  "watch": ["service"]
+}

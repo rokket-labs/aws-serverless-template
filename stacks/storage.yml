@@ -1,0 +1,29 @@
+Description: ${self:custom.package.title} Storage Stack [${opt:stage}]
+Resources:
+  UserStorageS3Bucket:
+    Type: AWS::S3::Bucket
+
+Outputs:
+  UserStorageS3BucketName:
+    Description: ${self:custom.package.title} User Storage S3 Bucket Name [${opt:stage}]
+    Value:
+      Ref: UserStorageS3Bucket
+    Export:
+      Name:
+        Fn::Join:
+          - "-"
+          - - Ref: AWS::StackName
+            - UserStorageS3BucketName
+
+  UserStorageS3BucketArn:
+    Description: ${self:custom.package.title} User Storage S3 Bucket ARN [${opt:stage}]
+    Value:
+      Fn::GetAtt:
+        - UserStorageS3Bucket
+        - Arn
+    Export:
+      Name:
+        Fn::Join:
+          - "-"
+          - - Ref: AWS::StackName
+            - UserStorageS3BucketArn

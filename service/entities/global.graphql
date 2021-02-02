@@ -1,0 +1,2 @@
+# Custom type for ISO formatted date string
+scalar Date

@@ -1,0 +1,83 @@
+service: ${file(./package.json):name}
+
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage}
+  region: us-east-1
+  memorySize: 1024
+  timeout: 30 # match HTTP timeout
+  logRetentionInDays: 14
+  lambdaHashingVersion: 20201221
+  environment:
+    DB_URI: ${ssm:/${self:service}/${opt:stage}/service/DbUri}
+    LOG_LEVEL: ${self:custom.stages.${opt:stage}.logLevel}
+    NODE_ENV: ${opt:stage}
+  apiGateway:
+    shouldStartNameWithService: true
+    minimumCompressionSize: 128 # compress responses over 128kb
+
+package:
+  exclude:
+    - coverage/**
+  include:
+    - service/**/*.graphql
+
+plugins:
+  - serverless-plugin-additional-stacks
+  - serverless-plugin-typescript
+  - serverless-prune-plugin
+  - serverless-offline
+
+functions:
+  graphql-index:
+    description: GraphQL handler
+    handler: service/functions/graphql/index.handler
+    events:
+      - http:
+          path: /graphql
+          method: post
+          cors: true
+          authorizer: ${self:custom.authorizer}
+      - http:
+          path: /graphql
+          method: get
+          cors: true
+
+  cognito-postConfirmation:
+    description: Cognito Post Confirmation handler
+    handler: service/functions/cognito/post-confirmation.handler
+    events:
+      - cognitoUserPool:
+          pool: ${self:service.name}-${opt:stage}-user-pool
+          trigger: PostConfirmation
+          existing: true
+
+custom:
+  authorizer:
+    name: Cognito
+    type: COGNITO_USER_POOLS
+    arn:
+      Fn::ImportValue: ${self:service}-${opt:stage}-auth-CognitoUserPoolArn
+
+  package:
+    version: ${file(./package.json):version}
+    title: ${file(./package.json):title}
+
+  stages:
+    local:
+      logLevel: debug
+    development:
+      logLevel: debug
+    production:
+      logLevel: error
+
+  prune:
+    automatic: true
+    number: 3
+
+  additionalStacks:
+    storage: ${file(./stacks/storage.yml)}
+    auth: ${file(./stacks/auth.yml)}
