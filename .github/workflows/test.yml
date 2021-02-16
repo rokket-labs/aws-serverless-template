@@ -1,0 +1,101 @@
+name: Test
+
+# Uncomment this for monorepos
+# defaults:
+#   run:
+#     working-directory: serverless
+
+on:
+  pull_request:
+    branches: [stage/development, stage/staging, stage/production]
+    types: [opened, reopened, synchronize]
+    # Uncomment this for monorepos
+    # paths: ['serverless/**']
+
+jobs:
+  Development:
+    runs-on: ubuntu-latest
+
+    if: github.base_ref == 'stage/development'
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Linter
+        run: npm run lint
+
+      - name: Run Tests
+        run: npm test
+        env:
+          NODE_ENV: development
+          LOG_LEVEL: none
+
+  Staging:
+    runs-on: ubuntu-latest
+
+    if: github.base_ref == 'stage/staging'
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Linter
+        run: npm run lint
+
+      - name: Run Tests
+        run: npm test
+        env:
+          NODE_ENV: staging
+          LOG_LEVEL: none
+
+  Production:
+    runs-on: ubuntu-latest
+
+    if: github.base_ref == 'stage/production'
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Run Linter
+        run: npm run lint
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Tests
+        run: npm test
+        env:
+          NODE_ENV: production
+          LOG_LEVEL: none
