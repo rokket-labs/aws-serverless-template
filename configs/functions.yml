@@ -1,0 +1,29 @@
+# API
+graphql-index:
+  description: GraphQL handler
+  handler: service/functions/graphql/index.handler
+  events:
+    - http:
+        path: /graphql
+        method: post
+        cors: true
+        authorizer: ${self:custom.authorizer}
+    - http:
+        path: /graphql
+        method: get
+        cors: true
+
+# Hooks
+cognito-postConfirmation:
+  description: Cognito Post Confirmation handler
+  handler: service/functions/cognito/post-confirmation.handler
+  events:
+    - cognitoUserPool:
+        pool: ${self:service}-${opt:stage}-user-pool # It's the pool name
+        trigger: PostConfirmation
+        existing: true
+
+# Utility
+database-sync:
+  description: Database index synchronization handler
+  handler: service/functions/db/sync.handler

@@ -1,0 +1,46 @@
+cognito:
+  userPoolId:
+    Ref: CognitoUserPool
+  userPoolArn:
+    Fn::GetAtt:
+      - UserStorageS3Bucket
+      - Arn
+
+s3:
+  usersStorageBucketName:
+    Ref: UserStorageS3Bucket
+
+authorizer:
+  name: Cognito
+  type: COGNITO_USER_POOLS
+  arn: ${self:custom.cognito.userPoolArn}
+
+package:
+  version: ${file(./package.json):version}
+  title: ${file(./package.json):title}
+
+stages:
+  local:
+    dbUri: ${env:DB_URI}
+    usersStorageBucketName: ${env:USERS_STORAGE_BUCKET_NAME}
+    cognitoUserPoolId: ${env:COGNITO_USER_POOL_ID}
+    logLevel: debug
+  development:
+    dbUri: ${ssm:/${self:service}/${opt:stage}/db-uri~true}
+    usersStorageBucketName: ${self:custom.s3.usersStorageBucketName}
+    cognitoUserPoolId: ${self:custom.cognito.userPoolId}
+    logLevel: debug
+  staging:
+    dbUri: ${ssm:/${self:service}/${opt:stage}/db-uri~true}
+    usersStorageBucketName: ${self:custom.s3.usersStorageBucketName}
+    cognitoUserPoolId: ${self:custom.cognito.userPoolId}
+    logLevel: error
+  production:
+    dbUri: ${ssm:/${self:service}/${opt:stage}/db-uri~true}
+    usersStorageBucketName: ${self:custom.s3.usersStorageBucketName}
+    cognitoUserPoolId: ${self:custom.cognito.userPoolId}
+    logLevel: error
+
+prune:
+  automatic: true
+  number: 3

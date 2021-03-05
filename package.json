@@ -6,11 +6,10 @@
   "main": "index.js",
   "private": true,
   "scripts": {
+    "db:sync": "sls invoke local --function database-sync",
     "start": "nodemon --exec sls offline start --stage local",
-    "deploy:development": "sls deploy --stage development",
-    "deploy:production": "sls deploy --stage production",
-    "deploy:staging": "sls deploy --stage staging",
     "lint": "eslint 'service/**/*.ts'",
+    "deploy": "sls deploy",
     "test": "jest"
   },
   "author": "Rokket Labs <info@rokketlabs.com> (https://rokketlabs.com)",
@@ -53,7 +52,6 @@
     "serverless": "^2.22.0",
     "serverless-jest-plugin": "^0.3.0",
     "serverless-offline": "^6.8.0",
-    "serverless-plugin-additional-stacks": "^1.5.0",
     "serverless-plugin-typescript": "^1.1.9",
     "serverless-prune-plugin": "^1.4.3",
     "ts-jest": "^26.5.0",

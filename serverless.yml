@@ -5,20 +5,15 @@ useDotenv: true
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs14.x
   stage: ${opt:stage}
   region: us-east-1
   memorySize: 1024
   timeout: 30 # match HTTP timeout
   logRetentionInDays: 14
   lambdaHashingVersion: 20201221
-  environment:
-    NODE_ENV: ${opt:stage}
-    LOG_LEVEL: ${self:custom.stages.${opt:stage}.logLevel}
-    DB_URI: ${ssm:/${self:service}/${opt:stage}/db-uri~true}
-    USERS_STORAGE_BUCKET_NAME: ${self:custom.stages.${opt:stage}.usersStorageBucketName}
-    COGNITO_USER_POOL_ID: ${self:custom.stages.${opt:stage}.cognitoUserPoolId}
-    COGNITO_REGION: ${self:provider.region}
+  iamRoleStatements: ${file(./configs/iam/role/statements.yml)}
+  environment: ${file(./configs/environment.yml)}
   apiGateway:
     shouldStartNameWithService: true
     minimumCompressionSize: 128 # compress responses over 128kb
@@ -35,73 +30,9 @@ plugins:
   - serverless-prune-plugin
   - serverless-offline
 
-functions:
-  graphql-index:
-    description: GraphQL handler
-    handler: service/functions/graphql/index.handler
-    events:
-      - http:
-          path: /graphql
-          method: post
-          cors: true
-          authorizer: ${self:custom.authorizer}
-      - http:
-          path: /graphql
-          method: get
-          cors: true
+functions: ${file(./configs/functions.yml)}
 
-  cognito-postConfirmation:
-    description: Cognito Post Confirmation handler
-    handler: service/functions/cognito/post-confirmation.handler
-    events:
-      - cognitoUserPool:
-          pool: ${self:service}-${opt:stage}-user-pool # It's the pool name
-          trigger: PostConfirmation
-          existing: true
-
-custom:
-  cognito:
-    userPoolId:
-      Ref: CognitoUserPool
-    userPoolArn:
-      Fn::GetAtt:
-        - UserStorageS3Bucket
-        - Arn
-
-  s3:
-    usersStorageBucketName:
-      Ref: UserStorageS3Bucket
-
-  authorizer:
-    name: Cognito
-    type: COGNITO_USER_POOLS
-    arn: ${self:custom.cognito.userPoolArn}
-
-  package:
-    version: ${file(./package.json):version}
-    title: ${file(./package.json):title}
-
-  stages:
-    local:
-      usersStorageBucketName: ${env:USERS_STORAGE_BUCKET_NAME}
-      cognitoUserPoolId: ${env:COGNITO_USER_POOL_ID}
-      logLevel: debug
-    development:
-      usersStorageBucketName: ${self:custom.s3.usersStorageBucketName}
-      cognitoUserPoolId: ${self:custom.cognito.userPoolId}
-      logLevel: debug
-    staging:
-      usersStorageBucketName: ${self:custom.s3.usersStorageBucketName}
-      cognitoUserPoolId: ${self:custom.cognito.userPoolId}
-      logLevel: error
-    production:
-      usersStorageBucketName: ${self:custom.s3.usersStorageBucketName}
-      cognitoUserPoolId: ${self:custom.cognito.userPoolId}
-      logLevel: error
-
-  prune:
-    automatic: true
-    number: 3
+custom: ${file(./configs/custom.yml)}
 
 resources:
   Resources:

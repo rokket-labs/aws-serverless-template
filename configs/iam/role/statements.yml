@@ -1,0 +1,48 @@
+# Allow functions to send emails through SES
+- Effect: Allow
+  Action:
+    - ses:SendEmail
+    - ses:SendTemplatedEmail
+    - ses:SendRawEmail
+    - ses:SendBulkTemplatedEmail
+  Resource:
+    Fn::Join:
+      - ':'
+      - - arn:aws:ses
+        - Ref: AWS::Region
+        - Ref: AWS::AccountId
+        - identity/*
+
+# Allow functions to manage Cognito users
+- Effect: Allow
+  Action:
+    - cognito-idp:AdminCreateUser
+    - cognito-idp:AdminDeleteUser
+  Resource:
+    Fn::GetAtt:
+      - CognitoUserPool
+      - Arn
+
+# Allow functions to act on Users S3 bucket
+- Effect: Allow
+  Action:
+    - s3:ListBucket
+  Resource: # Just the bucket
+    Fn::GetAtt:
+      - UsersStorageS3Bucket
+      - Arn
+
+- Effect: Allow
+  Action:
+    - s3:PutObjectAcl
+    - s3:PutObject
+    - s3:GetObjectAcl
+    - s3:GetObject
+    - s3:DeleteObject
+  Resource: # Any object in the bucket
+    Fn::Join:
+      - '/'
+      - - Fn::GetAtt:
+            - UsersStorageS3Bucket
+            - Arn
+        - '*'
