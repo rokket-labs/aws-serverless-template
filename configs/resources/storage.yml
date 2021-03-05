@@ -1,4 +1,3 @@
-Description: ${self:custom.package.title} Storage Stack [${opt:stage}]
 Resources:
   UserStorageS3Bucket:
     Type: AWS::S3::Bucket
@@ -11,7 +10,7 @@ Outputs:
     Export:
       Name:
         Fn::Join:
-          - "-"
+          - '-'
           - - Ref: AWS::StackName
             - UserStorageS3BucketName
 
@@ -24,6 +23,6 @@ Outputs:
     Export:
       Name:
         Fn::Join:
-          - "-"
+          - '-'
           - - Ref: AWS::StackName
             - UserStorageS3BucketArn

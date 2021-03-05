@@ -1,5 +1,5 @@
 import { loadFilesSync } from '@graphql-tools/load-files'
-import { mergeResolvers,mergeTypeDefs } from '@graphql-tools/merge'
+import { mergeResolvers, mergeTypeDefs } from '@graphql-tools/merge'
 import { ApolloServer } from 'apollo-server-lambda'
 
 import config from '../configs/graphql'
@@ -7,9 +7,11 @@ import config from '../configs/graphql'
 const { LOG_LEVEL, NODE_ENV } = process.env
 
 const resolvers = mergeResolvers(config.resolvers)
-const typeDefs = mergeTypeDefs(loadFilesSync(config.typeDefs, {
-  recursive: true,
-}))
+const typeDefs = mergeTypeDefs(
+  loadFilesSync(config.typeDefs, {
+    recursive: true,
+  }),
+)
 
 export const server = new ApolloServer({
   context: ({ event }) => event,
