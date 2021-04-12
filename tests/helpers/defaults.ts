@@ -3,7 +3,8 @@ import path from 'path'
 import { config } from 'dotenv'
 
 config({
-  path: path.resolve(process.cwd(), '.env.test'),
+  path: '.env.test',
+  debug: true,
 })
 
 process.env.SERVERLESS_TEST_ROOT = path.join(process.cwd(), 'service')

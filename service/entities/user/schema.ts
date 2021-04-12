@@ -1,3 +1,6 @@
+import { getRegExp as emailRegExp } from '@fiquu/is/lib/regexp/email'
+import { getRegExp as uuidRegExp } from '@fiquu/is/lib/regexp/uuid'
+
 import { UserRole } from './types'
 
 export default {
@@ -14,12 +17,14 @@ export default {
       bsonType: 'string',
       description: 'must be a valid email address and is required',
       minLength: 6,
+      pattern: emailRegExp(),
     },
     sub: {
       bsonType: 'string',
       description: 'must be a valid UUID and is required',
       minLength: 36,
       maxLength: 36,
+      pattern: uuidRegExp(),
     },
     role: {
       bsonType: 'string',

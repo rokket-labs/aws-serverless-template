@@ -1,4 +1,9 @@
-import { MongoClient, MongoClientOptions } from 'mongodb'
+import { MongoClientOptions } from 'mongodb'
+
+export interface ClientConfig {
+  uri: string
+  options: MongoClientOptions
+}
 
 const { DB_URI, NODE_ENV, LOG_LEVEL } = process.env
 
@@ -20,8 +25,13 @@ const options: MongoClientOptions = {
       : 1, // We don't need more for each function on production environments
 }
 
-const config = new Map<string, MongoClient>([
-  ['default', new MongoClient(DB_URI, { ...options })],
-])
+const config = new Map<string, ClientConfig>()
+
+config.set('default', {
+  uri: DB_URI,
+  options: {
+    ...options,
+  },
+})
 
 export default config

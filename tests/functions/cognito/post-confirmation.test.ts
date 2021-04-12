@@ -1,6 +1,6 @@
 import { PostConfirmationConfirmSignUpTriggerEvent } from 'aws-lambda'
 import faker from 'faker'
-import { LeanDocument, Types } from 'mongoose'
+import { ObjectId } from 'mongodb'
 import { getWrapper } from 'serverless-jest-plugin'
 
 import { UserDocument } from '../../../service/entities/user/types'
@@ -38,7 +38,7 @@ describe('cognito', () => {
           userAttributes: {
             email: faker.internet.email(),
             name: faker.name.findName(),
-            sub: faker.random.uuid(),
+            sub: faker.datatype.uuid(),
           },
         },
       }
@@ -58,15 +58,15 @@ describe('cognito', () => {
         userPoolId: null,
       })
 
-      const user = await db.conn
-        .model<UserDocument>('user')
-        .findOne()
-        .where('sub')
-        .equals(event.request.userAttributes.sub)
-        .lean()
+      const user = await db.client
+        .db()
+        .collection<UserDocument>('user')
+        .findOne({
+          sub: event.request.userAttributes.sub,
+        })
 
-      expect(user).toEqual<LeanDocument<UserDocument>>({
-        _id: expect.any(Types.ObjectId),
+      expect(user).toEqual<UserDocument>({
+        _id: expect.any(ObjectId),
         email: expect.any(String),
         name: expect.any(String),
         role: expect.any(String),

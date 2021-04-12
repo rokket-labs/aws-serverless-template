@@ -1,4 +1,4 @@
-import type { Document } from 'mongoose'
+import { ObjectId } from 'bson'
 
 export enum UserRole {
   Admin = 'ADMIN',
@@ -12,7 +12,8 @@ export interface User {
   role: UserRole
 }
 
-export interface UserDocument extends User, Document {
+export interface UserDocument extends User {
+  _id: ObjectId
   createdAt: Date
   updatedAt: Date
 }

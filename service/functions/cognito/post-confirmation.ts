@@ -4,9 +4,9 @@ import db from '../../components/database'
 import { UserDocument } from '../../entities/user/types'
 
 export async function handler(event: Event): Promise<Event> {
-  const conn = await db.connect()
+  const client = await db.connect()
 
-  await conn.model<UserDocument>('user').updateOne(
+  await client.db().collection<UserDocument>('user').updateOne(
     {
       sub: event?.request?.userAttributes?.sub,
     },

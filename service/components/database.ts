@@ -16,7 +16,8 @@ export const connections = new Map<string, MongoClient>()
 async function connect(name = 'default'): Promise<MongoClient> {
   if (connections.has(name)) return connections.get(name)
 
-  const client = config.get(name)
+  const { uri, options } = config.get(name)
+  const client = new MongoClient(uri, options)
 
   await client.connect()
   await client.db('admin').command({

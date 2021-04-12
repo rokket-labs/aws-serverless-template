@@ -1,7 +1,7 @@
+import { MongoClient } from 'mongodb'
 import { MongoMemoryServer } from 'mongodb-memory-server-core'
-import { Connection } from 'mongoose'
 
-import db, { manager } from '../../service/components/database'
+import db, { connections } from '../../service/components/database'
 import config from '../../service/configs/database'
 
 export interface TestDatabase {
@@ -13,7 +13,7 @@ export interface TestDatabase {
   /**
    * The connection to the mongod instance.
    */
-  conn: Connection
+  client: MongoClient
 
   /**
    * Closes the database connection and stops the mongod instance.
@@ -32,23 +32,22 @@ export async function setupTestDatabase(
   const mongod = await MongoMemoryServer.create()
   const uri = await mongod.getUri(true)
 
-  manager.add(name, {
-    uri,
-    options: {
-      ...config[name].options,
+  connections.set(
+    name,
+    new MongoClient(uri, {
+      ...config.get(name),
       poolSize: 10,
-    },
-  })
+    }),
+  )
 
-  const conn = await db.connect(name)
+  const client = await db.connect(name)
 
   return {
     mongod,
-    conn,
+    client,
 
     async stop() {
       await db.disconnect()
-      await conn.close(true)
       await mongod.stop()
     },
   }
