@@ -1,5 +1,4 @@
-import { createSchemaLoader } from '@fiquu/schema-loader-mongoose'
-import type { Connection } from 'mongoose'
+import { MongoClient } from 'mongodb'
 
 import config from '../configs/schemas'
 
@@ -9,11 +8,20 @@ import config from '../configs/schemas'
  * @param {string} name The connection name to load for.
  * @param {Connection} conn The connection to load into.
  */
-function load(name = 'default', conn: Connection): void {
-  const { schemas, options } = config.get(name)
-  const loader = createSchemaLoader(conn, options)
+export const load = async (
+  name = 'default',
+  client: MongoClient,
+): Promise<void> => {
+  const schemas = config.get(name)
 
-  loader.loadAll(schemas)
+  for (const [name, schema] of schemas)
+    await client.db().createCollection(name, {
+      validator: {
+        $jsonSchema: {
+          ...schema,
+        },
+      },
+    })
 }
 
 export default { load }

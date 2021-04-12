@@ -19,15 +19,12 @@
   ],
   "license": "UNLICENSED",
   "dependencies": {
-    "@fiquu/database-manager-mongoose": "^1.0.6",
     "@fiquu/is": "^1.4.0",
     "@fiquu/logger": "^1.0.5",
-    "@fiquu/schema-loader-mongoose": "^1.0.5",
     "@graphql-tools/load-files": "^6.2.5",
     "@graphql-tools/merge": "^6.2.7",
     "apollo-server-lambda": "^2.19.2",
-    "graphql": "^15.5.0",
-    "mongoose": "^5.11.14"
+    "graphql": "^15.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
@@ -36,6 +33,7 @@
     "@haftahave/serverless-ses-template": "^3.0.2",
     "@types/aws-lambda": "^8.10.71",
     "@types/jest": "^26.0.20",
+    "@types/mongodb": "^3.6.12",
     "@types/node": "^14.14.22",
     "@typescript-eslint/eslint-plugin": "^4.14.2",
     "@typescript-eslint/parser": "^4.14.2",

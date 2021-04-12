@@ -1,19 +1,7 @@
-import type {
-  SchemaLoaderOptions,
-  SchemasMap,
-} from '@fiquu/schema-loader-mongoose'
-
 import user from '../entities/user/schema'
 
-const config = new Map()
-const schemas: SchemasMap = new Map()
-const options: SchemaLoaderOptions = {
-  replace: false,
-  clone: true,
-}
+const config = new Map<string, Map<string, Record<string, unknown>>>()
 
-schemas.set('user', user)
-
-config.set('default', { schemas, options })
+config.set('default', new Map([['user', user]]))
 
 export default config

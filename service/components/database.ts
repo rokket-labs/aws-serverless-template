@@ -1,13 +1,10 @@
-import { createDatabaseManager } from '@fiquu/database-manager-mongoose'
-import type { Connection } from 'mongoose'
+import { MongoClient } from 'mongodb'
 
 import config from '../configs/database'
 
 import schemas from './schemas'
 
-export const manager = createDatabaseManager()
-
-manager.add('default', config.default)
+export const connections = new Map<string, MongoClient>()
 
 /**
  * Connects to the database and loads it's schemas.
@@ -16,24 +13,33 @@ manager.add('default', config.default)
  *
  * @returns {Connection} The connection.
  */
-async function connect(name = 'default'): Promise<Connection> {
-  const conn: Connection = await manager.connect(name)
+async function connect(name = 'default'): Promise<MongoClient> {
+  if (connections.has(name)) return connections.get(name)
 
-  await schemas.load(name, conn)
+  const client = config.get(name)
 
-  return conn
+  await client.connect()
+  await client.db('admin').command({
+    ping: 1,
+  })
+
+  await schemas.load(name, client)
+
+  connections.set(name, client)
+
+  return client
 }
 
 /**
  * Disconnects from the database.
  *
- * @param {string} name The connection name to use.
+ * @param {string} name The connection name to disconnect.
  * @param {boolean} force Whether to force disconnection.
  *
  * @returns {Promise<void>} A promise to the disconnection.
  */
 function disconnect(name = 'default', force?: boolean): Promise<void> {
-  return manager.disconnect(name, force)
+  return connections.get(name).close(force)
 }
 
 export default {
