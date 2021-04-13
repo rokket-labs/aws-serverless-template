@@ -3,7 +3,7 @@ import faker from 'faker'
 import { ObjectId } from 'mongodb'
 import { getWrapper } from 'serverless-jest-plugin'
 
-import { UserDocument } from '../../../service/entities/user/types'
+import { UserDocument, UserRole } from '../../../service/entities/user/types'
 import { setupTestDatabase, TestDatabase } from '../../helpers/database'
 
 describe('cognito', () => {
@@ -18,6 +18,12 @@ describe('cognito', () => {
         'graphql',
         '/functions/cognito/post-confirmation.ts',
         'handler',
+      )
+
+      console.log(
+        (await db.client.db().collections()).map(
+          ({ collectionName }) => collectionName,
+        ),
       )
     })
 
@@ -36,6 +42,7 @@ describe('cognito', () => {
         version: null,
         request: {
           userAttributes: {
+            role: faker.random.arrayElement(Object.values(UserRole)),
             email: faker.internet.email(),
             name: faker.name.findName(),
             sub: faker.datatype.uuid(),
@@ -71,8 +78,6 @@ describe('cognito', () => {
         name: expect.any(String),
         role: expect.any(String),
         sub: expect.any(String),
-        createdAt: expect.any(Date),
-        updatedAt: expect.any(Date),
       })
     })
   })

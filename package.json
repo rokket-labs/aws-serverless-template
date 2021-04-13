@@ -32,6 +32,7 @@
     "@babel/preset-typescript": "^7.12.7",
     "@haftahave/serverless-ses-template": "^3.0.2",
     "@types/aws-lambda": "^8.10.71",
+    "@types/faker": "^5.5.1",
     "@types/jest": "^26.0.20",
     "@types/mongodb": "^3.6.12",
     "@types/node": "^14.14.22",

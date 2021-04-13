@@ -2,7 +2,7 @@ import { MongoClient } from 'mongodb'
 
 import config from '../configs/database'
 
-import schemas from './schemas'
+import { loadSchemas } from './schemas'
 
 export const connections = new Map<string, MongoClient>()
 
@@ -13,22 +13,31 @@ export const connections = new Map<string, MongoClient>()
  *
  * @returns {Connection} The connection.
  */
-async function connect(name = 'default'): Promise<MongoClient> {
-  if (connections.has(name)) return connections.get(name)
+const connect = async (name = 'default'): Promise<MongoClient> => {
+  try {
+    if (connections.has(name)) return connections.get(name)
 
-  const { uri, options } = config.get(name)
-  const client = new MongoClient(uri, options)
+    const { uri, options } = config.get(name)
+    const client = new MongoClient(uri, options)
 
-  await client.connect()
-  await client.db('admin').command({
-    ping: 1,
-  })
+    await client.connect()
+    await client.db().command({
+      ping: 1,
+    })
 
-  await schemas.load(name, client)
+    connections.set(name, client)
 
-  connections.set(name, client)
+    await loadSchemas(name, client)
 
-  return client
+    return client
+  } catch (err) {
+    if (connections.has(name)) {
+      await connections.get(name).close()
+      connections.delete(name)
+    }
+
+    throw err
+  }
 }
 
 /**
@@ -39,7 +48,7 @@ async function connect(name = 'default'): Promise<MongoClient> {
  *
  * @returns {Promise<void>} A promise to the disconnection.
  */
-function disconnect(name = 'default', force?: boolean): Promise<void> {
+const disconnect = (name = 'default', force?: boolean): Promise<void> => {
   return connections.get(name).close(force)
 }
 

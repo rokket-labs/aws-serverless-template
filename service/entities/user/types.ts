@@ -14,6 +14,4 @@ export interface User {
 
 export interface UserDocument extends User {
   _id: ObjectId
-  createdAt: Date
-  updatedAt: Date
 }

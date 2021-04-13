@@ -1,8 +1,8 @@
 import { MongoClient } from 'mongodb'
 import { MongoMemoryServer } from 'mongodb-memory-server-core'
 
-import db, { connections } from '../../service/components/database'
 import config from '../../service/configs/database'
+import db from '../../service/components/database'
 
 export interface TestDatabase {
   /**
@@ -26,19 +26,19 @@ export interface TestDatabase {
  *
  * @param {boolean} loadSchemas Whether to register all schemas.
  */
-export async function setupTestDatabase(
+export const setupTestDatabase = async (
   name = 'default',
-): Promise<TestDatabase> {
+): Promise<TestDatabase> => {
   const mongod = await MongoMemoryServer.create()
   const uri = await mongod.getUri(true)
 
-  connections.set(
-    name,
-    new MongoClient(uri, {
-      ...config.get(name),
+  config.set(name, {
+    uri,
+    options: {
+      ...config.get(name).options,
       poolSize: 10,
-    }),
-  )
+    },
+  })
 
   const client = await db.connect(name)
 
