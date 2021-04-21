@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="x-apple-disable-message-reformatting" />
+
+    <!-- The title is used as the subject -->
+    <title>Te damos la bienvenida</title>
+
+    <!-- Styles will be inlined -->
+    <style>
+      body {
+        text-align: center;
+      }
+
+      p.confirm {
+        padding: 2em;
+      }
+
+      p.confirm a {
+        background-color: grey;
+        border-radius: 0.5em;
+        padding: 1.25em 3em;
+        color: white;
+        text-transform: uppercase;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 0.85em;
+      }
+
+      p.credentials {
+        font-weight: bold;
+      }
+
+      p.credentials code {
+        padding: 0.5em;
+        display: block;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h2>¡Gracias por registrarte!</h2>
+    <p>
+      Para completar el registro debes confirmar tu email con el siguiente
+      botón:
+    </p>
+    <p class="confirm">
+      <a href="${self:custom.stages.${opt:stage}.appOrigin}">Confirmar Email</a>
+    </p>
+    <p>Deberás introducir tu email y la siguiente clave temporal:</p>
+    <p class="credentials">
+      <code>{username}</code>
+      <code>{####}</code>
+    </p>
+    <p>Luego se te pedirá cambiar la calve por una definitiva.</p>
+    <hr />
+    <p>
+      <em
+        ><strong>Recuerda:</strong> la clave temporal expira después de 7
+        días.</em
+      >
+    </p>
+  </body>
+</html>

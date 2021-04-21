@@ -1,0 +1,21 @@
+Resources:
+  # Avoid browsers to log API errors as CORS failure
+  Default4xxGatewayResponse:
+    Type: AWS::ApiGateway::GatewayResponse
+    Properties:
+      ResponseType: DEFAULT_4XX
+      RestApiId:
+        Ref: ApiGatewayRestApi
+      ResponseParameters:
+        gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.stages.${opt:stage}.appOrigin}'"
+        gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+
+  Default5xxGatewayResponse:
+    Type: AWS::ApiGateway::GatewayResponse
+    Properties:
+      ResponseType: DEFAULT_5XX
+      RestApiId:
+        Ref: ApiGatewayRestApi
+      ResponseParameters:
+        gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.stages.${opt:stage}.appOrigin}'"
+        gatewayresponse.header.Access-Control-Request-Headers: "'*'"

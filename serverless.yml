@@ -36,5 +36,6 @@ custom: ${file(./configs/custom.yml)}
 
 resources:
   Resources:
+    - ${file(./configs/resources/responses.yml)}
     - ${file(./configs/resources/storage.yml)}
     - ${file(./configs/resources/auth.yml)}

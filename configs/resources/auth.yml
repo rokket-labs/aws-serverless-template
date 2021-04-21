@@ -8,14 +8,28 @@ Resources:
       AutoVerifiedAttributes:
         - email
       UsernameConfiguration:
-        CaseSensitive: false
+        CaseSensitive: false # Important for email usernames
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: false
+      # !!! Uncomment these to send from a custom email address and template !!!
+      #   InviteMessageTemplate:
+      #     EmailSubject: ${file(./email/templates/cognito/exports.js):invite_es.subject}
+      #     EmailMessage: ${file(./email/templates/cognito/exports.js):invite_es.message}
+      # VerificationMessageTemplate:
+      #   DefaultEmailOption: CONFIRM_WITH_CODE
+      #   EmailSubject: ${file(./email/templates/cognito/exports.js):verification_es.subject}
+      #   EmailMessage: ${file(./email/templates/cognito/exports.js):verification_es.message}
+      # EmailConfiguration:
+      #   SourceArn: ${ssm:/${self:service}/${opt:stage}/ses-source-arn~true}
+      #   From: Sender Name <${self:custom.stages.${opt:stage}.cognitoSender}>
+      #   EmailSendingAccount: DEVELOPER
       Policies:
         PasswordPolicy:
           MinimumLength: 12 # password length is more important than entropy
           RequireLowercase: false
           RequireUppercase: false
-          RequireNumbers: false
           RequireSymbols: false
+          RequireNumbers: true
       Schema:
         - AttributeDataType: String
           Name: email
@@ -112,6 +126,7 @@ Resources:
                   - cognito-sync:*
                   - cognito-identity:*
                 Resource: '*'
+        # Allow authenticated users to interact with the S3 bucket policy
         - PolicyName: cognito-${self:service}-${opt:stage}-auth-storage-role-policy
           PolicyDocument:
             Version: '2012-10-17'
