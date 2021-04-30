@@ -126,7 +126,7 @@ Resources:
                   - cognito-sync:*
                   - cognito-identity:*
                 Resource: '*'
-        # Allow authenticated users to interact with the S3 bucket policy
+        # Allow authenticated users to interact with the users S3 bucket
         - PolicyName: cognito-${self:service}-${opt:stage}-auth-storage-role-policy
           PolicyDocument:
             Version: '2012-10-17'

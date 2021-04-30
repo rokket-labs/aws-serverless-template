@@ -41,6 +41,14 @@ stages:
     cognitoUserPoolId: ${self:custom.cognito.userPoolId}
     logLevel: error
 
+serverless-offline:
+  allowCache: true
+
 prune:
   automatic: true
   number: 3
+
+sesTemplates:
+  addStage: true
+  configFile: ./email/templates/ses/exports.js
+  deployHook: after:deploy:deploy
