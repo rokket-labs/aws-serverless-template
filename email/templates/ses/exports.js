@@ -15,7 +15,7 @@ const path = require('path')
  * @see https://github.com/haftahave/serverless-ses-template
  */
 module.exports = async (serverless, options) => {
-  const files = glob.sync('email/templates/ses/**/*.html')
+  const files = glob.sync('email/templates/ses/**/*.hbs')
 
   return files.map(file => {
     const html = readFileSync(file)
@@ -28,7 +28,7 @@ module.exports = async (serverless, options) => {
 
     return {
       subject: dom.window.document.title,
-      name: path.basename(file, '.html'),
+      name: path.basename(file, '.hbs'),
       text: htmlToText(template),
       html: juice(template),
     }
