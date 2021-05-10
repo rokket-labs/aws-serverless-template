@@ -1,6 +1,7 @@
 Resources:
   CognitoUserPool:
     Type: AWS::Cognito::UserPool
+    DeletionPolicy: Retain
     Properties:
       UserPoolName: ${self:service}-${opt:stage}-user-pool
       UsernameAttributes:
@@ -42,6 +43,7 @@ Resources:
   CognitoUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
     DependsOn: CognitoUserPool
+    DeletionPolicy: Retain
     Properties:
       ClientName: ${self:service}-${opt:stage}-app-client
       GenerateSecret: false
@@ -50,6 +52,7 @@ Resources:
 
   CognitoIdentityPool:
     Type: AWS::Cognito::IdentityPool
+    DeletionPolicy: Retain
     DependsOn:
       - CognitoUserPool
       - CognitoUserPoolClient
@@ -70,6 +73,7 @@ Resources:
   CognitoIdentityPoolUnauthRole:
     Type: AWS::IAM::Role
     DependsOn: CognitoIdentityPool
+    DeletionPolicy: Retain
     Properties:
       RoleName: cognito-${self:service}-${opt:stage}-unauth-role
       AssumeRolePolicyDocument:
@@ -100,6 +104,7 @@ Resources:
   CognitoIdentityPoolAuthRole:
     Type: AWS::IAM::Role
     DependsOn: CognitoIdentityPool
+    DeletionPolicy: Retain
     Properties:
       RoleName: cognito-${self:service}-${opt:stage}-auth-role
       AssumeRolePolicyDocument:
@@ -142,6 +147,7 @@ Resources:
 
   CognitoIdentityPoolRolesAttachment:
     Type: AWS::Cognito::IdentityPoolRoleAttachment
+    DeletionPolicy: Retain
     DependsOn:
       - CognitoIdentityPool
       - CognitoIdentityPoolUnauthRole
