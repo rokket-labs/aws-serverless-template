@@ -26,17 +26,17 @@ stages:
     cognitoUserPoolId: ${env:COGNITO_USER_POOL_ID}
     logLevel: debug
   development:
-    dbUri: ${ssm:/${self:service}/${opt:stage}/db-uri~true}
+    dbUri: ${ssm:/${self:service}/${opt:stage}/db-uri}
     usersStorageBucketName: ${self:custom.s3.usersStorageBucketName}
     cognitoUserPoolId: ${self:custom.cognito.userPoolId}
     logLevel: debug
   staging:
-    dbUri: ${ssm:/${self:service}/${opt:stage}/db-uri~true}
+    dbUri: ${ssm:/${self:service}/${opt:stage}/db-uri}
     usersStorageBucketName: ${self:custom.s3.usersStorageBucketName}
     cognitoUserPoolId: ${self:custom.cognito.userPoolId}
     logLevel: error
   production:
-    dbUri: ${ssm:/${self:service}/${opt:stage}/db-uri~true}
+    dbUri: ${ssm:/${self:service}/${opt:stage}/db-uri}
     usersStorageBucketName: ${self:custom.s3.usersStorageBucketName}
     cognitoUserPoolId: ${self:custom.cognito.userPoolId}
     logLevel: error

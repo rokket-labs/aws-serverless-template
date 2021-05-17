@@ -1,6 +1,6 @@
 service: ${file(./package.json):name}
 
-variablesResolutionMode: 20210219
+variablesResolutionMode: 20210326
 useDotenv: true
 
 provider:
@@ -35,7 +35,6 @@ functions: ${file(./configs/functions.yml)}
 custom: ${file(./configs/custom.yml)}
 
 resources:
-  Resources:
-    - ${file(./configs/resources/responses.yml)}
-    - ${file(./configs/resources/storage.yml)}
-    - ${file(./configs/resources/auth.yml)}
+  - ${file(./configs/resources/responses.yml)}
+  - ${file(./configs/resources/storage.yml)}
+  - ${file(./configs/resources/auth.yml)}
