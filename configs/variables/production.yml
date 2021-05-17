@@ -1,0 +1,5 @@
+dbUri: ${ssm:/${self:service}/${opt:stage}/db-uri, ''}
+usersStorageBucketName: ${self:custom.s3.usersStorageBucketName, ''}
+cognitoUserPoolId: ${self:custom.cognito.userPoolId, ''}
+logLevel: error
+appOrigin: '*'

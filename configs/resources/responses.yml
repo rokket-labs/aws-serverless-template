@@ -7,7 +7,7 @@ Resources:
       RestApiId:
         Ref: ApiGatewayRestApi
       ResponseParameters:
-        gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.stages.${opt:stage}.appOrigin}'"
+        gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.variables.appOrigin}'"
         gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
 
   Default5xxGatewayResponse:
@@ -17,5 +17,5 @@ Resources:
       RestApiId:
         Ref: ApiGatewayRestApi
       ResponseParameters:
-        gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.stages.${opt:stage}.appOrigin}'"
+        gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.variables.appOrigin}'"
         gatewayresponse.header.Access-Control-Request-Headers: "'*'"

@@ -1,4 +1,5 @@
-import is from '@fiquu/is'
+import { isEmail } from '@fiquu/is/lib/regexp/email'
+import { isUuid } from '@fiquu/is/lib/regexp/uuid'
 import { Schema } from 'mongoose'
 
 import { UserRole } from './types'
@@ -7,12 +8,12 @@ const schema = new Schema({
   email: {
     type: String,
     required: true,
-    validate: (val: string): boolean => is.email(val),
+    validate: (val: string): boolean => isEmail(val),
   },
   sub: {
     type: String,
     required: true,
-    validate: (val: string): boolean => is.uuid(val),
+    validate: (val: string): boolean => isUuid(val),
   },
   name: {
     type: String,

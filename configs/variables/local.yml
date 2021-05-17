@@ -1,0 +1,5 @@
+dbUri: ${env:DB_URI, ''}
+usersStorageBucketName: ${env:USERS_STORAGE_BUCKET_NAME, ''}
+cognitoUserPoolId: ${env:COGNITO_USER_POOL_ID, ''}
+logLevel: debug
+appOrigin: '*'

@@ -22,7 +22,7 @@ Resources:
       #   EmailMessage: ${file(./email/templates/cognito/exports.js):verification_es.message}
       # EmailConfiguration:
       #   SourceArn: ${ssm:/${self:service}/${opt:stage}/ses-source-arn~true}
-      #   From: Sender Name <${self:custom.stages.${opt:stage}.cognitoSender}>
+      #   From: Sender Name <${self:custom.variables.cognitoSender}>
       #   EmailSendingAccount: DEVELOPER
       Policies:
         PasswordPolicy:
