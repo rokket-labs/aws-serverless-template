@@ -143,7 +143,9 @@ Resources:
                   - s3:getObjectAcl
                   - s3:getObject
                 Resource:
-                  - Fn::ImportValue: ${self:service}-${opt:stage}-storage-UserStorageS3BucketArn
+                  - Fn::GetAtt:
+                    - UsersStorageS3Bucket
+                    - Arn
 
   CognitoIdentityPoolRolesAttachment:
     Type: AWS::Cognito::IdentityPoolRoleAttachment
