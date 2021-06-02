@@ -3,12 +3,12 @@ cognito:
     Ref: CognitoUserPool
   userPoolArn:
     Fn::GetAtt:
-      - UserStorageS3Bucket
+      - CognitoUserPool
       - Arn
 
 s3:
   usersStorageBucketName:
-    Ref: UserStorageS3Bucket
+    Ref: UsersStorageS3Bucket
 
 authorizer:
   name: Cognito
