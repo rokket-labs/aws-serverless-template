@@ -1,7 +1,7 @@
 import { CustomMessageAuthenticationTriggerEvent as Event } from 'aws-lambda'
 
 import db from '../../components/database'
-import { UserDocument } from '../../entities/user/types'
+import { UserDocument, UserRole } from '../../entities/user/types'
 
 export async function handler(event: Event): Promise<Event> {
   const conn = await db.connect()
@@ -14,6 +14,7 @@ export async function handler(event: Event): Promise<Event> {
       email: event?.request?.userAttributes?.email,
       name: event?.request?.userAttributes?.name,
       sub: event?.request?.userAttributes?.sub,
+      role: UserRole.User
     },
     {
       upsert: true,

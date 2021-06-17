@@ -63,7 +63,7 @@ export const send = (
 
   // Encode special characters on friendly email addresses.
   _params.Destination.ToAddresses = params.Destination.ToAddresses.map(
-    (addr) => {
+    addr => {
       return encodeFriendlyAddress(addr)
     },
   )

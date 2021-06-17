@@ -1,4 +1,7 @@
+import user from './query/user'
+
 export default {
-  Mutation: {},
-  Query: {},
+  Query: {
+    user
+  },
 }

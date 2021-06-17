@@ -1,2 +1,5 @@
 # Custom type for ISO formatted date string
 scalar Date
+
+scalar UUID
+scalar ID

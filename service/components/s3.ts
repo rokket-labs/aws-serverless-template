@@ -1,15 +1,15 @@
-import {
-  PutObjectRequest,
-  ListObjectsRequest,
-  GetObjectRequest
-} from 'aws-sdk/clients/s3';
-import { basename, extname } from 'path';
-import { v4 as uuid } from 'uuid';
-import { S3 } from 'aws-sdk';
-import slug from 'url-slug';
-import mime from 'mime';
+import { basename, extname } from 'path'
 
-import config from '../configs/s3';
+import { S3 } from 'aws-sdk'
+import {
+  GetObjectRequest,
+  ListObjectsRequest,
+  PutObjectRequest } from 'aws-sdk/clients/s3'
+import mime from 'mime'
+import slug from 'url-slug'
+import { v4 as uuid } from 'uuid'
+
+import config from '../configs/s3'
 
 interface SignedUrlPutObjectRequest extends Omit<PutObjectRequest, 'Expires'> {
   /**
@@ -35,18 +35,18 @@ export const getSignedPutObjectUrl = (
   prefix: string,
   filename: string
 ): Promise<string> => {
-  const s3 = new S3();
-  const ext = extname(filename);
-  const name = basename(filename, ext);
+  const s3 = new S3()
+  const ext = extname(filename)
+  const name = basename(filename, ext)
   const params: SignedUrlPutObjectRequest = {
     Key: `${prefix}/${uuid()}/${slug(name)}${ext}`,
     ContentType: mime.getType(filename),
     StorageClass: 'INTELLIGENT_TIERING',
     Expires: config.expires,
     Bucket: config.bucket
-  };
+  }
 
-  return s3.getSignedUrlPromise('putObject', params);
+  return s3.getSignedUrlPromise('putObject', params)
 }
 
 /**
@@ -55,14 +55,14 @@ export const getSignedPutObjectUrl = (
  * @returns {Promise} A promise to the object fetch URL.
  */
 export const getSignedGetObjectUrl = (Key: string): Promise<string> => {
-  const s3 = new S3();
+  const s3 = new S3()
   const params: SignedUrlGetObjectRequest = {
     Expires: config.expires,
     Bucket: config.bucket,
     Key
-  };
+  }
 
-  return s3.getSignedUrlPromise('getObject', params);
+  return s3.getSignedUrlPromise('getObject', params)
 }
 
 /**
@@ -71,14 +71,14 @@ export const getSignedGetObjectUrl = (Key: string): Promise<string> => {
  * @returns {Promise} A promise to the delete object URL.
  */
 export const getSignedDeleteObjectUrl = (Key: string): Promise<string> => {
-  const s3 = new S3();
+  const s3 = new S3()
   const params: SignedUrlGetObjectRequest = {
     Expires: config.expires,
     Bucket: config.bucket,
     Key
-  };
+  }
 
-  return s3.getSignedUrlPromise('deleteObject', params);
+  return s3.getSignedUrlPromise('deleteObject', params)
 }
 
 /**
@@ -89,11 +89,11 @@ export const getSignedDeleteObjectUrl = (Key: string): Promise<string> => {
 export const listObjects = (
   Prefix: string
 ): Promise<S3.ListObjectsV2Output> => {
-  const s3 = new S3();
+  const s3 = new S3()
   const params: ListObjectsRequest = {
     Bucket: config.bucket,
     Prefix
-  };
+  }
 
-  return s3.listObjectsV2(params).promise();
+  return s3.listObjectsV2(params).promise()
 }

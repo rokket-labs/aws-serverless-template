@@ -12,6 +12,10 @@ type User {
   email: String
   # The User's organization name.
   organization: String
-  # The USer's role.
+  # The User's role.
   role: UserRole
+}
+
+type Query {
+  user(_id: ID!): User
 }

@@ -38,7 +38,7 @@ describe('cognito', () => {
           userAttributes: {
             email: faker.internet.email(),
             name: faker.name.findName(),
-            sub: faker.random.uuid(),
+            sub: faker.datatype.uuid(),
           },
         },
       }
@@ -55,7 +55,7 @@ describe('cognito', () => {
         response: null,
         triggerSource: null,
         userName: null,
-        userPoolId: null,
+        userPoolId: null
       })
 
       const user = await db.conn

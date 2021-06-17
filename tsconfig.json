@@ -8,6 +8,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "isolatedModules": false,
+    "resolveJsonModule": true,
     "lib": [
       "es2019",
       "dom"
