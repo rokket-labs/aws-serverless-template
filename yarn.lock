@@ -1020,13 +1020,6 @@
   resolved "https://registry.yarnpkg.com/@fiquu/is/-/is-3.0.1.tgz#adf5429d72e66a13e53090d63f348590e3aa63e4"
   integrity sha512-BFbvXjWh1t5/i5F/AprlFaWfDSt/VuJGtsNmdMlLB86P3KgPvuNtE2K5eQa/M7SvgAw9FNI8SKNf4Csg0HfPAA==
 
-"@fiquu/logger@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@fiquu/logger/-/logger-1.0.6.tgz#c8e47e1b7a7da769df9f73994754793aaf78e016"
-  integrity sha512-zloEKGhDLysx9dAL5nzMED7odfcEa62Y+xz++Mb10AWKgTNvCRe2BJnj8iSQpyol+P1+QJJlbGfHffu+jfwgog==
-  dependencies:
-    winston "^3.3.3"
-
 "@fiquu/schema-loader-mongoose@^1.0.5":
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/@fiquu/schema-loader-mongoose/-/schema-loader-mongoose-1.0.7.tgz#e1384a93172e08f93df8998dddeab521a6104815"
