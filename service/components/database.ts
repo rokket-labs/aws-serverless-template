@@ -1,13 +1,12 @@
-import { createDatabaseManager } from '@fiquu/database-manager-mongoose'
-import type { Connection } from 'mongoose'
+import mongoose, { Connection } from 'mongoose'
 
 import config from '../configs/database'
 
 import schemas from './schemas'
 
-export const manager = createDatabaseManager()
-
-manager.add('default', config.default)
+const mongooseInstance = mongoose
+  .createConnection(config.default.uri, config.default.options)
+  .asPromise()
 
 /**
  * Connects to the database and loads it's schemas.
@@ -17,7 +16,7 @@ manager.add('default', config.default)
  * @returns {Connection} The connection.
  */
 async function connect(name = 'default'): Promise<Connection> {
-  const conn: Connection = await manager.connect(name)
+  const conn = await mongooseInstance
 
   await schemas.load(name, conn)
 
@@ -32,8 +31,10 @@ async function connect(name = 'default'): Promise<Connection> {
  *
  * @returns {Promise<void>} A promise to the disconnection.
  */
-function disconnect(name = 'default', force?: boolean): Promise<void> {
-  return manager.disconnect(name, force)
+async function disconnect(): Promise<void> {
+  const conn = await mongooseInstance
+
+  return conn.close()
 }
 
 export default {
