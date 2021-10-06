@@ -7,7 +7,7 @@ name: Test
 
 on:
   pull_request:
-    branches: [stage/development, stage/staging, stage/production]
+    branches: [development, staging, production]
     types: [opened, reopened, synchronize]
     # Uncomment this for monorepos
     # paths: ['serverless/**']
@@ -16,7 +16,7 @@ jobs:
   Development:
     runs-on: ubuntu-latest
 
-    if: github.base_ref == 'stage/development'
+    if: github.base_ref == 'development'
 
     strategy:
       matrix:
@@ -45,7 +45,7 @@ jobs:
   Staging:
     runs-on: ubuntu-latest
 
-    if: github.base_ref == 'stage/staging'
+    if: github.base_ref == 'staging'
 
     strategy:
       matrix:
@@ -74,7 +74,7 @@ jobs:
   Production:
     runs-on: ubuntu-latest
 
-    if: github.base_ref == 'stage/production'
+    if: github.base_ref == 'production'
 
     strategy:
       matrix:
