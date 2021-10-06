@@ -1,7 +1,7 @@
 import type { LeanDocument } from 'mongoose'
 
 import db from '../../../components/database'
-import type { UserDocument } from '../types'
+import { UserDocument } from '../types'
 
 interface Params {
   _id: string
@@ -16,9 +16,9 @@ interface Params {
  */
 export default async (
   root: void,
-  { _id }: Params
+  { _id }: Params,
 ): Promise<LeanDocument<UserDocument>> => {
   const conn = await db.connect()
 
-  return conn.model<UserDocument>('user').findById(_id)
+  return conn.model<UserDocument>('User').findById(_id)
 }

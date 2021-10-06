@@ -9,19 +9,10 @@
     "emitDecoratorMetadata": true,
     "isolatedModules": false,
     "resolveJsonModule": true,
-    "lib": [
-      "es2019",
-      "dom"
-    ],
-    "types": [
-      "node",
-      "jest"
-    ]
+
+    "lib": ["es2019", "dom"],
+    "types": ["node", "jest"]
   },
-  "include": [
-    "service"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["service"],
+  "exclude": ["node_modules"]
 }

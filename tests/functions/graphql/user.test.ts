@@ -1,8 +1,6 @@
 /* eslint-disable max-lines-per-function */
 import { gql } from 'apollo-server-lambda'
-import {
-  APIGatewayProxyStructuredResultV2,
-} from 'aws-lambda'
+import { APIGatewayProxyStructuredResultV2 } from 'aws-lambda'
 import { print } from 'graphql'
 import { getWrapper } from 'serverless-jest-plugin'
 
@@ -18,10 +16,17 @@ describe('grahql', () => {
     let handler
 
     beforeAll(async () => {
-      handler = getWrapper('graphql', '/functions/graphql/index.ts', 'handler')
-
       db = await setupTestDatabase()
+      console.log('db', db)
       user = await createUser(db.conn)
+
+      console.log('user', user)
+
+      const found = await db.conn.model<UserDocument>('User').find()
+
+      console.log('gounf', found)
+
+      handler = getWrapper('graphql', '/functions/graphql/index.ts', 'handler')
     })
 
     afterAll(async () => {
@@ -52,7 +57,7 @@ describe('grahql', () => {
       expect(res).toEqual<APIGatewayProxyStructuredResultV2>({
         statusCode: 200,
         body: expect.any(String),
-        headers: expect.any(Object)
+        headers: expect.any(Object),
       })
 
       const { data, errors } = JSON.parse(res.body)
@@ -65,8 +70,8 @@ describe('grahql', () => {
             name: expect.any(String),
             email: expect.any(String),
             role: expect.any(String),
-          }
-        })
+          },
+        }),
       )
     })
 
@@ -94,7 +99,7 @@ describe('grahql', () => {
       expect(res).toEqual<APIGatewayProxyStructuredResultV2>({
         statusCode: 200,
         body: expect.any(String),
-        headers: expect.any(Object)
+        headers: expect.any(Object),
       })
 
       const { data, errors } = JSON.parse(res.body)
@@ -102,8 +107,8 @@ describe('grahql', () => {
       expect(errors).toBeUndefined()
       expect(data).toEqual(
         expect.objectContaining({
-          user: null
-        })
+          user: null,
+        }),
       )
     })
   })

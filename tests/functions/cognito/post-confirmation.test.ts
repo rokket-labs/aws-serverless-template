@@ -55,11 +55,11 @@ describe('cognito', () => {
         response: null,
         triggerSource: null,
         userName: null,
-        userPoolId: null
+        userPoolId: null,
       })
 
       const user = await db.conn
-        .model<UserDocument>('user')
+        .model<UserDocument>('User')
         .findOne()
         .where('sub')
         .equals(event.request.userAttributes.sub)

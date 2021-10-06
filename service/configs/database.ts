@@ -10,7 +10,6 @@ mongoose.set('debug', LOG_LEVEL === 'debug')
  * @see https://mongoosejs.com/docs/lambda.html
  */
 const options = {
-  promiseLibrary: Promise, // Set the native promise library
   connectTimeoutMS: 3000, // Fail quickly if can't connect
   bufferCommands: false, // Disable Mongoose buffering
   autoIndex: false, // You should use the db-indexes setup script to create the database indexes
