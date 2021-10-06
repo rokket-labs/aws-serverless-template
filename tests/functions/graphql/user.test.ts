@@ -17,14 +17,7 @@ describe('grahql', () => {
 
     beforeAll(async () => {
       db = await setupTestDatabase()
-      console.log('db', db)
       user = await createUser(db.conn)
-
-      console.log('user', user)
-
-      const found = await db.conn.model<UserDocument>('User').find()
-
-      console.log('gounf', found)
 
       handler = getWrapper('graphql', '/functions/graphql/index.ts', 'handler')
     })
