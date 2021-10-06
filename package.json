@@ -9,6 +9,7 @@
     "db:sync": "sls invoke local --function database-sync",
     "start": "nodemon --exec sls offline start --stage local",
     "lint": "eslint 'service/**/*.ts'",
+    "postinstall": "husky install",
     "deploy": "sls deploy",
     "test": "jest --no-cache"
   },
@@ -52,9 +53,11 @@
     "glob": "^7.1.7",
     "html-minifier": "^4.0.0",
     "html-to-text": "^8.0.0",
+    "husky": "^7.0.2",
     "jest": "^27.2.4",
     "jsdom": "^16.6.0",
     "juice": "^8.0.0",
+    "lint-staged": "^11.2.0",
     "mongodb-memory-server-core": "^6.9.3",
     "nodemon": "^2.0.6",
     "prettier": "^2.4.1",
@@ -66,5 +69,11 @@
     "ts-jest": "^27.0.5",
     "ts-node": "^10.0.0",
     "typescript": "^4.4.3"
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   }
 }
