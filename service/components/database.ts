@@ -1,25 +1,54 @@
-import { createDatabaseManager } from '@fiquu/database-manager-mongoose'
-import type { Connection } from 'mongoose'
+import mongoose, { Connection } from 'mongoose'
 
 import config from '../configs/database'
 
 import schemas from './schemas'
 
-export const manager = createDatabaseManager()
+class MongoManager {
+  #loadedConnection: Promise<Connection>
+  setConnection(newConnection: Promise<Connection>) {
+    const loadConnection = async () => {
+      const connection = await newConnection
 
-manager.add('default', config.default)
+      schemas.load(connection)
+
+      return connection
+    }
+
+    this.#loadedConnection = loadConnection()
+  }
+
+  async getConnection() {
+    if (this.#loadedConnection === undefined)
+      throw new Error('Must set a connection first')
+
+    return this.#loadedConnection
+  }
+  async disconnect(force = false) {
+    if (this.#loadedConnection) {
+      const conn = await this.#loadedConnection
+
+      await conn.close(force)
+      this.#loadedConnection = undefined
+    }
+  }
+}
+
+export const manager = new MongoManager()
 
 /**
  * Connects to the database and loads it's schemas.
  *
- * @param {string} name The connection name to use.
- *
- * @returns {Connection} The connection.
  */
-async function connect(name = 'default'): Promise<Connection> {
-  const conn: Connection = await manager.connect(name)
+async function connect(): Promise<Connection> {
+  if (process.env.NODE_ENV !== 'test')
+    manager.setConnection(
+      mongoose
+        .createConnection(config.default.uri, config.default.options)
+        .asPromise(),
+    )
 
-  await schemas.load(name, conn)
+  const conn = await manager.getConnection()
 
   return conn
 }
@@ -27,13 +56,12 @@ async function connect(name = 'default'): Promise<Connection> {
 /**
  * Disconnects from the database.
  *
- * @param {string} name The connection name to use.
  * @param {boolean} force Whether to force disconnection.
  *
  * @returns {Promise<void>} A promise to the disconnection.
  */
-function disconnect(name = 'default', force?: boolean): Promise<void> {
-  return manager.disconnect(name, force)
+async function disconnect(force = false): Promise<void> {
+  return manager.disconnect(force)
 }
 
 export default {

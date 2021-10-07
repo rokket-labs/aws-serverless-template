@@ -7,7 +7,7 @@ name: Deploy
 
 on:
   push:
-    branches: [stage/development, stage/staging, stage/production]
+    branches: [development, staging, production]
     # Uncomment this for monorepos
     # paths: ['server/**']
 
@@ -15,7 +15,7 @@ jobs:
   Development:
     runs-on: ubuntu-latest
 
-    if: github.ref == 'refs/heads/stage/development'
+    if: github.ref == 'refs/heads/development'
 
     strategy:
       matrix:
@@ -40,13 +40,13 @@ jobs:
         run: npm ci
 
       - name: Deploy
-        run: npm run deploy:development
+        run: npm run deploy -- --stage development
         env:
           NODE_ENV: development
   Staging:
     runs-on: ubuntu-latest
 
-    if: github.ref == 'refs/heads/stage/staging'
+    if: github.ref == 'refs/heads/staging'
 
     strategy:
       matrix:
@@ -71,7 +71,7 @@ jobs:
         run: npm ci
 
       - name: Deploy
-        run: npm run deploy:staging
+        run: npm run deploy -- --stage staging
         env:
           NODE_ENV: staging
 
@@ -103,6 +103,6 @@ jobs:
         run: npm ci
 
       - name: Deploy
-        run: npm run deploy:production
+        run: npm run deploy -- --stage production
         env:
           NODE_ENV: production

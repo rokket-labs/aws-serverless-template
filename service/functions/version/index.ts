@@ -1,19 +1,17 @@
-import { createLogger } from '@fiquu/logger'
 import type {
   APIGatewayProxyEventV2,
   APIGatewayProxyResultV2,
 } from 'aws-lambda'
 
 import { name, version } from '../../../package.json'
+import { logger } from '../../util/logger'
 
 const { NODE_ENV } = process.env
-
-const log = createLogger('functions/version')
 
 export const handler = async (
   event: APIGatewayProxyEventV2,
 ): Promise<APIGatewayProxyResultV2> => {
-  log.debug(event)
+  logger.debug(event)
 
   return {
     statusCode: 200,

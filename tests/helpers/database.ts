@@ -1,5 +1,5 @@
 import { MongoMemoryServer } from 'mongodb-memory-server-core'
-import { Connection } from 'mongoose'
+import mongoose, { Connection } from 'mongoose'
 
 import db, { manager } from '../../service/components/database'
 import config from '../../service/configs/database'
@@ -24,32 +24,26 @@ export interface TestDatabase {
 /**
  * Creates a test in-memory database instance and stubs the database component.
  *
- * @param {boolean} loadSchemas Whether to register all schemas.
  */
-export async function setupTestDatabase(
-  name = 'default',
-): Promise<TestDatabase> {
+export async function setupTestDatabase(): Promise<TestDatabase> {
   const mongod = await MongoMemoryServer.create()
-  const uri = await mongod.getUri(true)
 
-  manager.add(name, {
-    uri,
-    options: {
-      ...config[name].options,
-      poolSize: 10,
-    },
-  })
+  const uri = mongod.getUri()
 
-  const conn = await db.connect(name)
+  manager.setConnection(
+    mongoose.createConnection(uri, config.default.options).asPromise(),
+  )
+
+  const conn = await db.connect()
 
   return {
     mongod,
     conn,
 
     async stop() {
-      await db.disconnect()
+      await db.disconnect(true)
       await conn.close(true)
-      await mongod.stop()
+      await mongod.stop(true)
     },
   }
 }

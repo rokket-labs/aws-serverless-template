@@ -1,16 +1,6 @@
-import type { Document } from 'mongoose'
+import { Document } from 'mongoose'
 
-export enum UserRole {
-  Admin = 'ADMIN',
-  User = 'USER',
-}
-
-export interface User {
-  email: string
-  name: string
-  sub: string
-  role: UserRole
-}
+import { User } from './model'
 
 export interface UserDocument extends User, Document {
   createdAt: Date
