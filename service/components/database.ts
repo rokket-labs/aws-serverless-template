@@ -1,38 +1,6 @@
-import mongoose, { Connection } from 'mongoose'
+import type { Connection } from 'mongoose'
 
-import config from '../configs/database'
-
-import schemas from './schemas'
-
-class MongoManager {
-  #loadedConnection: Promise<Connection>
-  setConnection(newConnection: Promise<Connection>) {
-    const loadConnection = async () => {
-      const connection = await newConnection
-
-      schemas.load(connection)
-
-      return connection
-    }
-
-    this.#loadedConnection = loadConnection()
-  }
-
-  async getConnection() {
-    if (this.#loadedConnection === undefined)
-      throw new Error('Must set a connection first')
-
-    return this.#loadedConnection
-  }
-  async disconnect(force = false) {
-    if (this.#loadedConnection) {
-      const conn = await this.#loadedConnection
-
-      await conn.close(force)
-      this.#loadedConnection = undefined
-    }
-  }
-}
+import { MongoManager } from '../util/MongoManager'
 
 export const manager = new MongoManager()
 
@@ -41,13 +9,6 @@ export const manager = new MongoManager()
  *
  */
 async function connect(): Promise<Connection> {
-  if (process.env.NODE_ENV !== 'test')
-    manager.setConnection(
-      mongoose
-        .createConnection(config.default.uri, config.default.options)
-        .asPromise(),
-    )
-
   const conn = await manager.getConnection()
 
   return conn
