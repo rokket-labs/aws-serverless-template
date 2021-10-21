@@ -7,7 +7,7 @@ name: Deploy
 
 on:
   push:
-    branches: [development, staging, production]
+    branches: [development, staging, main]
     # Uncomment this for monorepos
     # paths: ['server/**']
 
@@ -37,10 +37,10 @@ jobs:
           aws-region: us-east-1
 
       - name: Install Dependencies
-        run: npm ci
+        run: yarn install --frozen-lockfile
 
       - name: Deploy
-        run: npm run deploy -- --stage development
+        run: yarn run deploy  --stage development
         env:
           NODE_ENV: development
   Staging:
@@ -68,17 +68,17 @@ jobs:
           aws-region: us-east-1
 
       - name: Install Dependencies
-        run: npm ci
+        run: yarn install --frozen-lockfile
 
       - name: Deploy
-        run: npm run deploy -- --stage staging
+        run: yarn run deploy --stage staging
         env:
           NODE_ENV: staging
 
   Production:
     runs-on: ubuntu-latest
 
-    if: github.ref == 'refs/heads/stage/production'
+    if: github.ref == 'refs/heads/main'
 
     strategy:
       matrix:
@@ -100,9 +100,9 @@ jobs:
           aws-region: us-east-1
 
       - name: Install Dependencies
-        run: npm ci
+        run: yarn install --frozen-lockfile
 
       - name: Deploy
-        run: npm run deploy -- --stage production
+        run: yarn run deploy --stage production
         env:
           NODE_ENV: production
