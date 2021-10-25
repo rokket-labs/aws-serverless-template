@@ -32,6 +32,7 @@ export class MongoManager {
 
     return this.#loadedConnection
   }
+
   async disconnect(force = false): Promise<void> {
     if (this.#loadedConnection) {
       const conn = await this.#loadedConnection

@@ -39,9 +39,7 @@ export async function setupTestDatabase(): Promise<TestDatabase> {
   return {
     mongod,
     conn,
-
     async stop() {
-      await db.disconnect(true)
       await conn.close(true)
       await mongod.stop(true)
     },
